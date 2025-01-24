@@ -36,8 +36,8 @@
 
 ## **📚 Documentation**
 
-- **[GitHub Discussions](./discussions)**: Share your feedback, ask questions, or suggest features.
-- **[Wiki](./wiki)**: Explore detailed documentation, examples, and the roadmap.
+- **[GitHub Discussions](https://github.com/0xjcf/ignite-test/discussions/1)**: Share your feedback, ask questions, or suggest features.
+- **[Wiki](https://github.com/0xjcf/ignite-test/wiki)**: Explore detailed documentation, examples, and the roadmap.
 
 ---
 
