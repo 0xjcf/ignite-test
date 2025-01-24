@@ -1,4 +1,4 @@
-# ignite-test
+# **ignite-test**
 
 **ignite-test** is a lightweight and extensible testing framework for modern web development. Built to test state-driven logic and web components, it supports **XState**, **Redux**, and **MobX** with a unified API. **ignite-test** focuses on making testing effortless, reliable, and performance-aware.
 
@@ -34,6 +34,13 @@
 
 ---
 
+## **📚 Documentation**
+
+- **[GitHub Discussions](./discussions)**: Share your feedback, ask questions, or suggest features.
+- **[Wiki](./wiki)**: Explore detailed documentation, examples, and the roadmap.
+
+---
+
 ## **Examples**
 
 ### **1. Isolated Tests with `state`**
@@ -43,7 +50,7 @@
 ```typescript
 igniteTest({
   component: MyLoginForm,
-  stateHandler: loginReducer,
+  stateHandlers: loginReducer,
   describe: 'Isolated LoginForm Tests (Redux)',
   e2e: false, // Ensure each test is independent (optional - default is false)
   tests: [
@@ -98,7 +105,7 @@ igniteTest({
 ```typescript
 igniteTest({
   component: MyLoginForm,
-  stateHandler: loginReducer,
+  stateHandlers: loginReducer,
   describe: 'E2E LoginForm Success Path (Redux)',
   e2e: true, // Shared state across tests
   tests: [
@@ -138,7 +145,7 @@ igniteTest({
 ```typescript
 igniteTest({
   component: MyLoginForm,
-  stateHandler: loginReducer,
+  stateHandlers: loginReducer,
   describe: 'E2E LoginForm Failure Path (Redux)',
   e2e: true, // Shared state across tests
   tests: [
@@ -175,14 +182,14 @@ igniteTest({
 
 ## **Key Advantages**
 
-### **Isolated Tests with `state`**
+#### **Isolated Tests with `state`**
 - Fully self-contained tests with explicitly defined starting states.
 
-### **E2E Tests**
+#### **E2E Tests**
 - Automatically validate state progression across shared workflows without needing additional conditions.
 
-### **Logical Separation of Success and Failure Paths**
+#### **Logical Separation of Success and Failure Paths**
 - Independent test suites for **resolve** and **reject** ensure clarity and maintainability.
 
-### **Consistency Across Libraries**
+#### **Consistency Across Libraries**
 - The same API (`state`, `assert`, `pending`, `resolve`, `reject`) works seamlessly with **Redux**, **XState**, and **MobX**.
