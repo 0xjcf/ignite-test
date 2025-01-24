@@ -38,3 +38,5 @@ Thumbs.db
 *~
 ._*
 
+# Project-specific files
+GITHUB_ISSUE.md
