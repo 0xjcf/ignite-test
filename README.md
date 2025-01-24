@@ -1,50 +1,188 @@
 # ignite-test
 
-**ignite-test** is a lightweight and extensible testing framework for modern web development. Built to test state-driven logic and web components, it supports XState, Redux, and MobX with a unified API. **ignite-test** focuses on making testing effortless, reliable, and performance-aware.
+**ignite-test** is a lightweight and extensible testing framework for modern web development. Built to test state-driven logic and web components, it supports **XState**, **Redux**, and **MobX** with a unified API. **ignite-test** focuses on making testing effortless, reliable, and performance-aware.
 
 ---
 
-## 🚀 Features (Planned)
+## **🚀 Why igniteTest?**
 
-- Unified API for testing XState, Redux, and MobX.
-- Mock state machines and stores for simpler state testing.
-- State-driven testing with support for `beforeAction` and `afterAction` hooks.
-- Performance logging with `performance-logs.json` generation.
-- Seamless integration with **ignite-element**.
+### 1. **Unified API Across State Management Libraries**
+- Whether you’re using **Redux**, **XState**, or **MobX**, the test syntax remains exactly the same.
+- Focus on **what to test**, not **how to adapt your tests** to a specific library.
 
----
+### 2. **Simplified Test Syntax**
+- Tests automatically execute when `igniteTest` is called—no extra boilerplate required.
 
-## 📖 Roadmap
-
-### Phase 0: Repository Initialization
-- Initialize repo with TypeScript boilerplate.
-- Add CI/CD pipeline for tests and build.
-
-### Phase 1: Core Development
-- Implement core testing APIs for XState, Redux, and MobX.
-- Add performance tracking and logging.
-
-### Phase 2: ignite-element Integration
-- Demonstrate integration with the **ignite-element** library.
-
-### Phase 3: Extend Functionality
-- Add reporting tools and CLI for benchmarking.
-- Automate CI/CD for performance reporting.
+### 3. **State Validation Made Easy**
+- Use the **`state`** property to explicitly set the starting state in **isolated tests**.
+- Built-in support for `assert`, `pending`, `resolve`, and `reject` ensures seamless workflow validation.
 
 ---
 
-## 💻 Contributing
+## **🌟 Core Features**
 
-We welcome contributions! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) to get started. Whether it’s reporting bugs, suggesting features, or submitting code, your input is invaluable.
+### **Unified Test Workflow**
+- **`state`**: Explicitly define the initial state for isolated tests.
+- **`assert`**: Validate the initial state.
+- **`pending`**: Validate intermediate states.
+- **`resolve`**: Validate success states.
+- **`reject`**: Validate failure states.
+
+### **Reusable Test Logic**
+- Define reusable test commands for shared logic (e.g., `idle` and `pending` states).
+- Compose commands into success and failure paths.
 
 ---
 
-## 📜 License
+## **Examples**
 
-ignite-test is licensed under the [MIT License](LICENSE).
+### **1. Isolated Tests with `state`**
+
+#### Redux Isolated Tests
+
+```typescript
+igniteTest({
+  component: MyLoginForm,
+  stateHandler: loginReducer,
+  describe: 'Isolated LoginForm Tests (Redux)',
+  e2e: false, // Ensure each test is independent (optional - default is false)
+  tests: [
+    {
+      it: 'Should validate initial state',
+      state: { isSubmitting: false, error: null }, // Explicitly set the starting state
+      assert: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe(null);
+        expect(root.querySelector('.form')).toBeVisible();
+      },
+    },
+    {
+      it: 'Should validate pending state after SUBMIT',
+      state: { isSubmitting: false, error: null },
+      actions: [submit()],
+      pending: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(true);
+        expect(root.querySelector('.spinner')).toBeVisible();
+      },
+    },
+    {
+      it: 'Should validate success state after SUCCESS',
+      state: { isSubmitting: true, error: null },
+      actions: [submitSuccess()],
+      resolve: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe(null);
+        expect(root.querySelector('.success-message')).toHaveTextContent('Login Successful!');
+      },
+    },
+    {
+      it: 'Should validate error state after FAILURE',
+      state: { isSubmitting: true, error: null },
+      actions: [submitFailure()],
+      reject: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe('Login Failed');
+        expect(root.querySelector('.error-message')).toHaveTextContent('Login Failed!');
+      },
+    },
+  ],
+});
+```
 
 ---
 
-## 🌱 Getting Started (Coming Soon)
+### **2. E2E Tests**
 
-Stay tuned for the first release and usage examples!
+#### Success Path (Resolve)
+
+```typescript
+igniteTest({
+  component: MyLoginForm,
+  stateHandler: loginReducer,
+  describe: 'E2E LoginForm Success Path (Redux)',
+  e2e: true, // Shared state across tests
+  tests: [
+    {
+      it: 'Should validate idle state',
+      assert: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe(null);
+        expect(root.querySelector('.form')).toBeVisible();
+      },
+    },
+    {
+      it: 'Should validate pending state after SUBMIT',
+      actions: [submit()],
+      pending: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(true);
+        expect(root.querySelector('.spinner')).toBeVisible();
+      },
+    },
+    {
+      it: 'Should validate resolve state after SUCCESS',
+      actions: [submitSuccess()],
+      resolve: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe(null);
+        expect(root.querySelector('.success-message')).toHaveTextContent('Login Successful!');
+      },
+    },
+  ],
+});
+```
+
+---
+
+#### Failure Path (Reject)
+
+```typescript
+igniteTest({
+  component: MyLoginForm,
+  stateHandler: loginReducer,
+  describe: 'E2E LoginForm Failure Path (Redux)',
+  e2e: true, // Shared state across tests
+  tests: [
+    {
+      it: 'Should validate idle state',
+      assert: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe(null);
+        expect(root.querySelector('.form')).toBeVisible();
+      },
+    },
+    {
+      it: 'Should validate pending state after SUBMIT',
+      actions: [submit()],
+      pending: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(true);
+        expect(root.querySelector('.spinner')).toBeVisible();
+      },
+    },
+    {
+      it: 'Should validate reject state after FAILURE',
+      actions: [submitFailure()],
+      reject: ({ state, root }) => {
+        expect(state.isSubmitting).toBe(false);
+        expect(state.error).toBe('Login Failed');
+        expect(root.querySelector('.error-message')).toHaveTextContent('Login Failed!');
+      },
+    },
+  ],
+});
+```
+
+---
+
+## **Key Advantages**
+
+### **Isolated Tests with `state`**
+- Fully self-contained tests with explicitly defined starting states.
+
+### **E2E Tests**
+- Automatically validate state progression across shared workflows without needing additional conditions.
+
+### **Logical Separation of Success and Failure Paths**
+- Independent test suites for **resolve** and **reject** ensure clarity and maintainability.
+
+### **Consistency Across Libraries**
+- The same API (`state`, `assert`, `pending`, `resolve`, `reject`) works seamlessly with **Redux**, **XState**, and **MobX**.
